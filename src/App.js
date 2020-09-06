@@ -1,51 +1,82 @@
 import React from 'react';
 import ReactDOM from "react-dom";
 import './App.css';
-import CounterApp from './counterApp';
+import TodoElement from "./TodoElement";
+import AddTodo from "./AddTodo"
 
 
 class App extends React.Component {
   constructor() {
-    super()
-    this.state={
+    super();
+    this.state = {
+      count: 0,
       todoList: [],
-      value: '',
-    }
+      value: ""
+    };
   }
 
-  onChange(e) {
-    this.setState({value : e.target.value})
+  onChange(keyValue) {
+    this.setState(keyValue);
   }
 
-  add() {　
+  add(todoElement) {
     this.setState({
-      todoList: this.state.todoList.concat(this.state.value),
-      value: '',
-    })
-    
+      todoList: this.state.todoList.concat(todoElement),
+      value: ""
+    });
   }
+
+
+  // handleDelete(id) {
+  //   let todoList = this.state.todoList.concat()
+  //   let index = 0
+  //   todoList.map((element, idx) => {
+  //     if (element.id == id) {
+  //       index = idx
+  //     }
+  //   })
+  //   todoList.splice(index, 1)
+  //   this.setState({todoList: todoList})
+  // }
+
+  handleDelete(id) {
+    let todoList = this.state.todoList.concat()
+    let index = 0
+    todoList.map((element, idx) => {
+      if (element.id == id) {
+        index = idx
+      }
+    })
+    todoList.splice(index, 1)
+    this.setState({todoList: todoList})
+  }
+
 
   render() {
-    const todoListNode = this.state.todoList.map((todo, idx) => {
-      return <li key={idx}>{todo}</li>
-    })
-
+    const { todoList } = this.state;
     return (
       <div>
         <h1>TODO App</h1>
-        <input 
-          type="text"
-          value={this.state.value}
-          onChange={e => this.onChange(e)}
+        <AddTodo
+          {...this.state}
+          onChange={keyValue => this.onChange(keyValue)}
+          add={todoElement => this.add(todoElement)}
         />
-        <button onClick={() => this.add()}>追加</button>
         <ul>
-          {todoListNode}
+          {todoList.map(element => (
+            <TodoElement
+              key={element.id}
+              element={element}
+              {...this.state}
+              onDelete={() => this.handleDelete()}
+            />
+          ))}
         </ul>
       </div>
-    )
+    );
   }
 }
+
 
 
 
